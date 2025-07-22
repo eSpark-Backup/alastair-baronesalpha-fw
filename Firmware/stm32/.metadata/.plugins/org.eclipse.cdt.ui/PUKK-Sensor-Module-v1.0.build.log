@@ -1,0 +1,10 @@
+21:56:54 **** Incremental Build of configuration Debug for project PUKK-Sensor-Module-v1.0 ****
+make -j4 all 
+arm-none-eabi-size  PUKK-Sensor-Module-v1.0.elf 
+   text	   data	    bss	    dec	    hex	filename
+  36704	    472	   2464	  39640	   9ad8	PUKK-Sensor-Module-v1.0.elf
+Finished building: default.size.stdout
+ 
+
+21:56:54 Build Finished. 0 errors, 0 warnings. (took 463ms)
+

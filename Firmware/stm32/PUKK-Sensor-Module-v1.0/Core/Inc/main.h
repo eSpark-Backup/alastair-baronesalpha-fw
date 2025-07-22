@@ -57,6 +57,54 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define SPEEDOMETER_SIG_Pin GPIO_PIN_0
+#define SPEEDOMETER_SIG_GPIO_Port GPIOA
+#define TEST_LED_Pin GPIO_PIN_0
+#define TEST_LED_GPIO_Port GPIOB
+#define OIL_PRESURE_SIG_Pin GPIO_PIN_7
+#define OIL_PRESURE_SIG_GPIO_Port GPIOE
+#define HIGH_BEAM_SIG_Pin GPIO_PIN_8
+#define HIGH_BEAM_SIG_GPIO_Port GPIOE
+#define NEUTRAL_SIG_Pin GPIO_PIN_9
+#define NEUTRAL_SIG_GPIO_Port GPIOE
+#define OIL_TEMP_SIG_Pin GPIO_PIN_10
+#define OIL_TEMP_SIG_GPIO_Port GPIOE
+#define ENGINE_TEMP_SIG_Pin GPIO_PIN_11
+#define ENGINE_TEMP_SIG_GPIO_Port GPIOE
+#define RIGHT_TURN_SIG_Pin GPIO_PIN_12
+#define RIGHT_TURN_SIG_GPIO_Port GPIOE
+#define LEFT_TURN_SIG_Pin GPIO_PIN_13
+#define LEFT_TURN_SIG_GPIO_Port GPIOE
+#define ECU_CAN_RX_Pin GPIO_PIN_12
+#define ECU_CAN_RX_GPIO_Port GPIOB
+#define ECU_CAN_TX_Pin GPIO_PIN_13
+#define ECU_CAN_TX_GPIO_Port GPIOB
+#define GEAR_4_SIG_Pin GPIO_PIN_8
+#define GEAR_4_SIG_GPIO_Port GPIOD
+#define GEAR_5_SIG_Pin GPIO_PIN_9
+#define GEAR_5_SIG_GPIO_Port GPIOD
+#define TACHOMETER_SIG_Pin GPIO_PIN_8
+#define TACHOMETER_SIG_GPIO_Port GPIOA
+#define ADC_RDY_Pin GPIO_PIN_12
+#define ADC_RDY_GPIO_Port GPIOC
+#define DISPLAY_CAN_RX_Pin GPIO_PIN_0
+#define DISPLAY_CAN_RX_GPIO_Port GPIOD
+#define DISPLAY_CAN_TX_Pin GPIO_PIN_1
+#define DISPLAY_CAN_TX_GPIO_Port GPIOD
+#define DISPLAY_CAN_STB_Pin GPIO_PIN_2
+#define DISPLAY_CAN_STB_GPIO_Port GPIOD
+#define DISPLAY_CAN_SHDN_Pin GPIO_PIN_3
+#define DISPLAY_CAN_SHDN_GPIO_Port GPIOD
+#define GEAR_1_SIG_Pin GPIO_PIN_5
+#define GEAR_1_SIG_GPIO_Port GPIOD
+#define GEAR_2_SIG_Pin GPIO_PIN_6
+#define GEAR_2_SIG_GPIO_Port GPIOD
+#define GEAR_3_SIG_Pin GPIO_PIN_7
+#define GEAR_3_SIG_GPIO_Port GPIOD
+#define DEBUG_TX_Pin GPIO_PIN_6
+#define DEBUG_TX_GPIO_Port GPIOB
+#define DEBUG_RX_Pin GPIO_PIN_7
+#define DEBUG_RX_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
