@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;PUKK-Sensor-Module-v1.0/Alastair_sensorBoard_test Debug.launch&apos; to &apos;PUKK-Sensor-Module-v1.0.launch&apos;" description="Rename resource &apos;Alastair_sensorBoard_test Debug.launch&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Alastair_sensorBoard_test Debug.launch" name="PUKK-Sensor-Module-v1.0.launch" stamp="1753194833076" updateReferences="true"/>
+</session>
