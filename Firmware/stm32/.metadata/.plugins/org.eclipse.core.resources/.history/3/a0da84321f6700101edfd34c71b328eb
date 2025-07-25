@@ -1,0 +1,23 @@
+/*
+ * App.h
+ *
+ *  Created on: Jul 22, 2025
+ *      Author: Farhan
+ */
+
+#ifndef APP_H_
+#define APP_H_
+
+#include "main.h"
+
+FDCAN_HandleTypeDef* hfdcan1;
+FDCAN_HandleTypeDef* hfdcan2;
+I2C_HandleTypeDef*   hi2c1;
+UART_HandleTypeDef*  huart1;
+
+
+void app_init(void);
+void app_execute(void);
+
+
+#endif /* APP_H_ */

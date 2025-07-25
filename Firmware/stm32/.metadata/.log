@@ -962,3 +962,219 @@ org.eclipse.core.runtime.CoreException: attempt to set description for a project
 	at org.eclipse.equinox.launcher.Main.run(Main.java:1481)
 !SUBENTRY 1 org.eclipse.cdt.core 4 -1 2025-07-22 19:38:43.364
 !MESSAGE attempt to set description for a project which does not exist or not open
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-23 18:04:08.649
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+!SESSION 2025-07-23 20:48:56.338 -----------------------------------------------
+eclipse.buildId=Version 1.19.0
+java.version=21.0.3
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -data file:/D:/.Embedded/.GITHUB/alastair-baronessalpha-fw/Firmware/stm32/
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2025-07-23 20:49:26.797
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2025-07-23 20:49:26.798
+!MESSAGE Log4j2 initialized with config file D:\.Embedded\.GITHUB\alastair-baronessalpha-fw\Firmware\stm32\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2025-07-23 20:49:41.794
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 20:51:46.366
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 20:53:09.807
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 20:56:15.164
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-07-25 20:58:41.721
+!MESSAGE Indexed 'PUKK-Sensor-Module-v1.0' (28 sources, 196 headers) in 8.4 sec: 25,792 declarations; 133,962 references; 3 unresolved inclusions; 46 syntax errors; 768 unresolved names (0.48%)
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 20:59:11.504
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 21:03:47.624
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 21:04:21.406
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 21:05:06.724
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 21:26:46.888
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 21:47:15.727
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 21:58:19.653
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 22:14:19.163
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 22:18:06.717
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 22:21:15.006
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 22:21:43.959
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 22:22:49.720
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 22:24:13.114
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 22:31:05.263
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 22:33:40.592
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 22:35:31.300
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 22:35:51.645
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 22:47:54.688
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 22:49:13.908
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 22:52:15.127
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:02:40.822
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:04:16.557
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:05:16.033
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:05:44.667
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:06:25.471
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:07:26.657
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:07:50.985
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:09:03.531
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:10:47.471
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:11:02.294
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:11:33.034
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:17:34.595
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:23:14.459
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:24:28.384
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:26:09.679
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:30:00.384
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:30:39.832
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:31:34.813
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:32:05.677
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:33:44.511
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:34:07.172
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:34:46.100
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:35:10.314
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:35:45.846
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:37:39.851
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:39:27.054
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:41:49.446
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:42:46.008
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:43:50.128
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:44:16.900
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-25 23:57:00.512
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-26 00:01:05.708
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-26 00:03:09.328
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-26 00:03:37.751
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-26 00:04:46.872
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-26 00:05:22.435
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-26 00:09:01.772
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-26 00:13:38.897
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-26 00:15:43.120
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-26 00:17:54.586
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-26 00:19:27.647
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12
+
+!ENTRY com.st.stm32cube.ide.mcu.debug.swv 1 1 2025-07-26 00:31:10.955
+!MESSAGE SWV configuration; base: 72000000; minDiv: 18; maxDiv: 2147483647; maxSWO: 4000000; limit: 2147483647 => SWO: 4000000; CPU: 48000000; div: 12

@@ -1,0 +1,131 @@
+/*
+ * console.c
+ *
+ *  Created on: Jul 25, 2025
+ *      Author: Farhan
+ */
+
+#include "App.h"
+#include <stdarg.h>
+#include <stdbool.h>
+
+UART_HandleTypeDef*  console_interface = NULL;
+
+#define CONSOLE_TAG		"[ UART ] "
+#define PROMPT			printf("> ");	fflush(stdout);
+#define CONSOLE_RX_BUFFER_SIZE 512
+
+uint8_t console_rx_char; // single-byte rx buffer
+char console_line_buffer[CONSOLE_RX_BUFFER_SIZE];
+volatile uint16_t console_line_index = 0;
+volatile bool console_line_ready = false;
+
+void _RxCpltCallback(UART_HandleTypeDef *huart);
+void _RxEvntCallback(UART_HandleTypeDef *huart, uint16_t Pos);
+
+void console_prompt(void)
+{
+//    char greeting[CONSOLE_RX_BUFFER_SIZE];
+    uint32_t uid0 = HAL_GetUIDw0();
+    uint32_t uid1 = HAL_GetUIDw1();
+    uint32_t uid2 = HAL_GetUIDw2();
+
+//    snprintf(greeting, sizeof(greeting),
+    printf(
+        "\r\n"
+        "=================================================\r\n"
+        "Firmware Version : %s\r\n"
+        "Build Date       : %s %s\r\n"
+        "HAL Version      : %ld.%ld.%ld\r\n"
+        "MCU Unique ID    : %08lX-%08lX-%08lX\r\n"
+        "System Clock     : %lu Hz\r\n"
+        "HCLK Frequency   : %lu Hz\r\n"
+        "PCLK1 Frequency  : %lu Hz\r\n"
+        "PCLK2 Frequency  : %lu Hz\r\n"
+        "Console Ready. Type 'help' to begin.\r\n"
+        "=================================================\r\n"
+        "        Welcome to %s\r\n"
+    	"=================================================\r\n\r\n",
+        FW_VERSION,
+        __DATE__, __TIME__,
+        HAL_GetHalVersion() >> 24,
+        (HAL_GetHalVersion() >> 16) & 0xFF,
+        (HAL_GetHalVersion() >> 8)  & 0xFF,
+        uid0, uid1, uid2,
+        HAL_RCC_GetSysClockFreq(),
+        HAL_RCC_GetHCLKFreq(),
+        HAL_RCC_GetPCLK1Freq(),
+        HAL_RCC_GetPCLK2Freq(),
+        BOARD_NAME
+    );
+//    fflush(stdout);
+    PROMPT
+
+//    HAL_UART_Transmit(console_interface, (uint8_t *)greeting, strlen(greeting), HAL_MAX_DELAY);
+}
+
+void console_init(UART_HandleTypeDef* huart)
+{
+	console_interface = huart;
+	HAL_UART_RegisterRxEventCallback(console_interface, _RxEvntCallback);
+	HAL_UART_RegisterCallback(console_interface, HAL_UART_RX_COMPLETE_CB_ID, _RxCpltCallback);
+	LOG_ITM_2(CONSOLE_TAG "Console UART initialized.\n");
+	console_prompt();
+//	HAL_UART_AbortReceive(console_interface);
+	HAL_Delay(10);
+	HAL_UART_Receive_IT(console_interface, &console_rx_char, 1);  // Start receiving
+}
+
+void console_print(const char *format, ...)
+{
+    char buffer[CONSOLE_RX_BUFFER_SIZE];
+    va_list args;
+    va_start(args, format);
+    int len = vsnprintf(buffer, sizeof(buffer), format, args);
+    va_end(args);
+    HAL_UART_Transmit(console_interface, (uint8_t*)buffer, len, HAL_MAX_DELAY);
+    LOG_ITM_2(CONSOLE_TAG "Console data print: %s", buffer);
+}
+
+void console_print_buffer(void)
+{
+	console_print("%s", console_line_buffer);
+	console_line_index = 0;
+	LOG_ITM_2(CONSOLE_TAG "Console buffer: %s", console_line_buffer);
+}
+
+void _RxCpltCallback(UART_HandleTypeDef *huart)
+//void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    if (huart == console_interface)
+    {
+        if (!console_line_ready)
+        {
+            char ch = console_rx_char;
+
+            if (ch == '\r' || ch == '\n')
+            {
+                console_line_buffer[console_line_index] = '\0';
+                console_line_ready = true;
+
+                // Optional: echo newline
+                printf("\r\n");
+				LOG_ITM_2(CONSOLE_TAG "data received on console uart\r\n%s\r\n", console_line_buffer);
+            }
+            else if (console_line_index < CONSOLE_RX_BUFFER_SIZE - 1)
+            {
+                console_line_buffer[console_line_index++] = ch;
+                printf("%c", ch);
+                fflush(stdout);
+            }
+        }
+
+        // Restart reception
+        HAL_UART_Receive_IT(console_interface, &console_rx_char, 1);
+    }
+}
+
+void _RxEvntCallback(UART_HandleTypeDef *huart, uint16_t Pos)
+{
+    LOG_ITM_1(CONSOLE_TAG "event callback, received bytes: %d", Pos);
+}

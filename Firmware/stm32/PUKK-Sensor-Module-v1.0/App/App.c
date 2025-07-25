@@ -1,0 +1,53 @@
+/*
+ * App.cpp
+ *
+ *  Created on: Jul 22, 2025
+ *      Author: Farhan
+ */
+
+#include "App.h"
+
+
+FDCAN_HandleTypeDef* pukk_display_can_interface = NULL;
+FDCAN_HandleTypeDef* ecu_can_interface = NULL;
+I2C_HandleTypeDef*   ads_interface = NULL;
+TIM_HandleTypeDef*	 base_timer = NULL;						// base 1ms timer
+
+
+void _timer_callback(TIM_HandleTypeDef* htim)
+{
+	LOG_ITM_1("timer callback\n");
+}
+
+void app_init(FDCAN_HandleTypeDef* pukk_can, FDCAN_HandleTypeDef* ecu_can, I2C_HandleTypeDef* ads_i2c, TIM_HandleTypeDef* timer)
+{
+	pukk_display_can_interface = pukk_can;
+	ecu_can_interface = ecu_can;
+	ads_interface = ads_i2c;
+	base_timer = timer;
+
+	// populate timer pointer first
+	HAL_TIM_RegisterCallback(base_timer, HAL_TIM_PERIOD_ELAPSED_CB_ID, _timer_callback);
+	HAL_TIM_Base_Start(base_timer);
+
+
+	// Initialize timer based approach for logging GPIO signals and populate them in a buffer
+
+	// Initialize timers for capturing tachmeter/speedometer pulses
+	// use a seperate timer for logging pulse counts
+
+	// Initialize i2c for communication with ads1115 adc ic
+	// ch1: coolant, ch2: fuel gauge, ch3: voltage feedback/callibration (3.36v ideal reading), ch4: connected to GND
+
+	// Initialize can bus communication
+}
+
+void app_execute(void)
+{
+	if (console_line_ready)
+	{
+		console_line_ready = false;
+
+		console_print_buffer();
+	}
+}
