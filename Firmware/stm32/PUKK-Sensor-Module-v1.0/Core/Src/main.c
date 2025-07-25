@@ -108,7 +108,6 @@ int fgetc(FILE *f)
 void blink_test_led()
 {
 	static uint32_t timeStamp = 0;
-
 	uint32_t now = HAL_GetTick();
 
 	if((now - timeStamp) > 500)
@@ -158,9 +157,9 @@ int main(void)
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
   INIT_ITM_DEBUG(ITM_CH_1, ITM_CH_2);
-  console_init(&huart1);
-
   app_init(&hfdcan1, &hfdcan2, &hi2c1, &htim6);
+  
+  console_init(&huart1);
   /* USER CODE END 2 */
 
   /* Infinite loop */

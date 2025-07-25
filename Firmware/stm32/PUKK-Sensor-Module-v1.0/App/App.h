@@ -12,8 +12,16 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#define FW_VERSION      "v0.1.0"
+#define FW_VERSION      "v0.1.1"
 #define BOARD_NAME      "Alastair-BaronessAlpha"
+
+// tiem delay after which sample should be taken
+#define GEAR_CHECK_TIME     1000
+#define SPEED_TACH_TIME     1000
+#define COOLANT_TIME        1500
+#define FUEL_GAUGE_TIME     2000
+#define VOLT_CALIB_TIME     10000           // check voltage every 10secs
+
 
 extern volatile bool console_line_ready;
 
