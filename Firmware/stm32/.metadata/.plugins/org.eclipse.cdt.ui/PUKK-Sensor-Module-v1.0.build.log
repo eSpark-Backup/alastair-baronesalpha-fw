@@ -1,23 +1,39 @@
-00:58:51 **** Incremental Build of configuration Debug for project PUKK-Sensor-Module-v1.0 ****
+00:37:42 **** Incremental Build of configuration Debug for project PUKK-Sensor-Module-v1.0 ****
 make -j4 all 
 arm-none-eabi-gcc "../App/App.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_PWR_LDO_SUPPLY -DUSE_HAL_DRIVER -DSTM32H723xx -c -I../Core/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -I"D:/.Embedded/.GITHUB/alastair-baronessalpha-fw/Firmware/stm32/PUKK-Sensor-Module-v1.0/App" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"App/App.d" -MT"App/App.o"  -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "App/App.o"
+../App/App.c: In function '_timer_callback':
+../App/App.c:88:25: warning: unused variable 'speedTachoCheckTimestamp' [-Wunused-variable]
+   88 |         static uint32_t speedTachoCheckTimestamp = 0;
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~
+../App/App.c: In function 'check_gears':
+../App/App.c:208:5: warning: statement with no effect [-Wunused-value]
+  208 |     for (i; i < 6; i++)
+      |     ^~~
+../App/App.c: In function 'print_data':
+../App/App.c:328:5: warning: statement with no effect [-Wunused-value]
+  328 |     for (i; i < 6; i++)
+      |     ^~~
+../App/App.c: In function 'app_init':
+../App/App.c:360:27: warning: unused variable 'err' [-Wunused-variable]
+  360 |         HAL_StatusTypeDef err = ADS1115_oneShotMeasure(ads_handle);
+      |                           ^~~
 arm-none-eabi-g++ -o "PUKK-Sensor-Module-v1.0.elf" @"objects.list"   -mcpu=cortex-m7 -T"D:\.Embedded\.GITHUB\alastair-baronessalpha-fw\Firmware\stm32\PUKK-Sensor-Module-v1.0\STM32H723VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="PUKK-Sensor-Module-v1.0.map" -Wl,--gc-sections -static  -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 Finished building target: PUKK-Sensor-Module-v1.0.elf
  
 arm-none-eabi-size  PUKK-Sensor-Module-v1.0.elf 
 arm-none-eabi-objdump -h -S PUKK-Sensor-Module-v1.0.elf  > "PUKK-Sensor-Module-v1.0.list"
 arm-none-eabi-objcopy  -O ihex PUKK-Sensor-Module-v1.0.elf  "PUKK-Sensor-Module-v1.0.hex"
-arm-none-eabi-objcopy  -O binary PUKK-Sensor-Module-v1.0.elf  "PUKK-Sensor-Module-v1.0.bin"
    text	   data	    bss	    dec	    hex	filename
-  65864	   1760	   3720	  71344	  116b0	PUKK-Sensor-Module-v1.0.elf
+  73120	   1808	   3744	  78672	  13350	PUKK-Sensor-Module-v1.0.elf
+arm-none-eabi-objcopy  -O binary PUKK-Sensor-Module-v1.0.elf  "PUKK-Sensor-Module-v1.0.bin"
 Finished building: default.size.stdout
  
 Finished building: PUKK-Sensor-Module-v1.0.hex
-Finished building: PUKK-Sensor-Module-v1.0.bin
  
+Finished building: PUKK-Sensor-Module-v1.0.bin
  
 Finished building: PUKK-Sensor-Module-v1.0.list
  
 
-00:58:54 Build Finished. 0 errors, 0 warnings. (took 2s.614ms)
+00:37:43 Build Finished. 0 errors, 4 warnings. (took 1s.834ms)
 

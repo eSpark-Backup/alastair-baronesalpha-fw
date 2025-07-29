@@ -12,7 +12,7 @@
 UART_HandleTypeDef*  console_interface = NULL;
 
 #define CONSOLE_TAG		"[ UART ] "
-#define PROMPT			printf("> ");	fflush(stdout);
+#define PROMPT			printf("> ");	fflush(stdout);         // need to flush the buffer (won't print unless /n character is sent)
 #define CONSOLE_RX_BUFFER_SIZE 512
 
 uint8_t console_rx_char; // single-byte rx buffer
