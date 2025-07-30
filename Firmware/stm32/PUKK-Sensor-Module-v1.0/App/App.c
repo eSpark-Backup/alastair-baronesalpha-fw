@@ -32,12 +32,13 @@
 
 #define BATTERY_DIVIDER				((10000.0f+3900.0f)/(3900.0f))		// 	Ra = 10kohm, Rb = 3.9kohm;	Vin = Vread * ((Ra+Rb)/Rb)
 
-#define FUEL_FLOAT_SWITCH_VMIN		1.2f
-#define FUEL_FLOAT_SWITCH_VMAX		3.3f
+#define FUEL_SENSOR_CONST_CURR		(1.25f / FUEL_SENSOR_FIXED_OHM)		// 1.25 magic number from documentation for finding constant current
+#define FUEL_FLOAT_SWITCH_VMIN		(FUEL_SENSOR_MIN_OHM * FUEL_SENSOR_CONST_CURR)
+#define FUEL_FLOAT_SWITCH_VMAX		(FUEL_SENSOR_MAX_OHM * FUEL_SENSOR_CONST_CURR)
 
 #define NTC_R_FIXED       			49900.0f     // 49.9kΩ resistor
 #define NTC_BETA          			3950.0f      // Beta constant for your NTC
-#define NTC_R0            			10000.0f     // Resistance at 25°C
+#define NTC_R0            			50000.0f     // Resistance at 25°C
 #define NTC_T0            			298.15f      // Reference temperature in Kelvin (25°C)
 #define NTC_VIN_MV        			5000.0f      // Supply voltage in millivolts on NTC coolant divider network
 
@@ -132,11 +133,13 @@ float ntc_mv_to_temperature(float vout_mv)
         return -273.15f;
 
     // Calculate NTC resistance using millivolts
-    float r_ntc = (vout_mv * NTC_R_FIXED) / (NTC_VIN_MV - vout_mv);
-
+    float r_ntc = ((NTC_VIN_MV/vout_mv) * NTC_R_FIXED) - NTC_R_FIXED;
+	// LOG_ITM_2("[ ADS ] resistance_NTC: %f\n", r_ntc);
+	
     // Apply Beta formula
     float inv_T = (1.0f / NTC_T0) + (1.0f / NTC_BETA) * logf(r_ntc / NTC_R0);
     float temperature_K = 1.0f / inv_T;
+	// LOG_ITM_2("[ ADS ] temp(k): %f\n", temperature_K);
 
     return temperature_K - 273.15f;  // Return °C
 }
@@ -232,6 +235,7 @@ void check_ads()
 {
 	if(!CHECK_FLAG(OP_RUNNING_FLAG_BIT) && CHECK_FLAG(COOLANT_FLAG_BIT))
 	{
+		ADS1115_flushData(ads_handle);
 		// start ads conversion, setup readout on RDY interrupt
 		default_ads1115_config.channel = CHANNEL_AIN0_GND;
 		ADS1115_updateConfig(ads_handle, default_ads1115_config);
@@ -327,6 +331,7 @@ void app_init(FDCAN_HandleTypeDef* pukk_can, FDCAN_HandleTypeDef* ecu_can, I2C_H
 	// Initialize i2c for communication with ads1115 adc ic
 	// ch1: coolant, ch2: fuel gauge, ch3: voltage feedback/callibration (3.36v ideal reading) (battery voltage), ch4: connected to GND
 	ads_handle = ADS1115_init(ads_i2c_interface, default_ads1115_addr, default_ads1115_config);
+	ADS1115_setConversionReadyPin(ads_handle);
 	ADS1115_oneShotMeasure(ads_handle);
 	SET_FLAG(OP_RUNNING_FLAG_BIT);
 

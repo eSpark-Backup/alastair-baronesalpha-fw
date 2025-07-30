@@ -53,6 +53,12 @@ extern volatile uint16_t flags;
 #define SPEEDO_PULSES_PER_REV       4.0f            // check actual sensor value
 #define VEHICLE_WHEEL_CIRCUM        2105.0f         // whel circumference in mm
 
+// float switch resistance range
+#define FUEL_SENSOR_FIXED_OHM       75.0f           // constant resistance R79
+#define FUEL_SENSOR_MAX_OHM         91.6f           // resistance of sensor when lever in full position
+#define FUEL_SENSOR_MIN_OHM         7.1f            // resistance of sensor when lever in empty position
+#define FUEL_SENSOR_VOLTAGE         12.0f           // voltage applied on voltage regulator
+
 
 extern FDCAN_HandleTypeDef* pukk_display_can_interface;
 extern FDCAN_HandleTypeDef* ecu_can_interface;
