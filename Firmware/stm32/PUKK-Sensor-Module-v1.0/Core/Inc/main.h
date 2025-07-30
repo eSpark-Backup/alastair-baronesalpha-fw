@@ -41,6 +41,8 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+#define DEFAULT_BLINK_TIME    500
+#define OP_BLINK_TIME         50
 
 /* USER CODE END EC */
 

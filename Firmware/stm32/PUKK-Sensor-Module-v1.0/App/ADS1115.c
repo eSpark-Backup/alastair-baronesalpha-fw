@@ -21,7 +21,7 @@ ADS1115_Config_t default_ads1115_config = {
 	.dataRate = DRATE_860,
 	.compareMode = COMP_HYSTERESIS,
 	.polarityMode = POLARITY_ACTIVE_LOW,
-	.latchingMode = LATCHING_COMPARATOR,
+	.latchingMode = LATCHING_NONE,
 	.queueComparator = QUEUE_FOUR,
 };
 
