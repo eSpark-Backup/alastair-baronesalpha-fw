@@ -4,7 +4,7 @@
 The STM32 FDCAN Vehicle Gateway uses an STM32H7 microcontroller with dual FDCAN interfaces to acquire and process automotive sensor data. It supports inputs for RPM, speed, fuel level, coolant temperature, battery voltage, and various vehicle status signals. Processed data is transmitted over CAN for reliable instrumentation, monitoring, and diagnostics.
 
 ### Hardware
-- MCU: STM32H723GZ (24 MHz HSE)
+- MCU: STM32H723GZ (48 MHz HSE)
 - FDCAN1: 25 kbps CAN bus (PUKK DISPLAY CAN)
 - FDCAN2: 25 kbps CAN bus (BIKE CAN BUS)
 - Interfaces: I2C1, USART1 (115200), TIM1/5, GPIO
