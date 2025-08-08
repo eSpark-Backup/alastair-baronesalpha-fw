@@ -45,6 +45,7 @@ extern volatile uint16_t flags;
 #define INDICATIONS_TIME            100
 
 #define PRINT_DATA_TIME             5000            // print debug data every 5secs
+#define CAN_TRANSMIT_TIME           4000            // CAN transmit data every 4secs
 
 
 // use a variable style format? or store these values in NVS?

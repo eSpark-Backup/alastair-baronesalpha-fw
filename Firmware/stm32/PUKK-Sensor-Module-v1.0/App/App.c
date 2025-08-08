@@ -107,6 +107,7 @@ void _tick_callback(void)
 	static uint32_t voltageCheckTimestamp = 0;
 	static uint32_t indicationsCheckTimestamp = 0;
 	static uint32_t printDataTimestamp = 0;
+	static uint32_t CANtransmitTimestamp = 0;
 	
 #if(!USE_SYSTICK_HANDLER)
 	if(htim == base_timer)
@@ -122,6 +123,7 @@ void _tick_callback(void)
 		CHECK_AND_SET_FLAG(voltageCheckTimestamp, VOLT_CALIB_TIME, VOLTAGE_FLAG_BIT, OP_RUNNING_FLAG_BIT, LOG_ITM_2(TAG "check voltage\n"), false);
 		CHECK_AND_SET_FLAG(indicationsCheckTimestamp, INDICATIONS_TIME, INDICATIONS_FLAG_BIT, 0, LOG_ITM_2(TAG "check indicators\n"), false);
 		CHECK_AND_SET_FLAG(printDataTimestamp, PRINT_DATA_TIME, PRINT_INFO_FLAG_BIT, 0, LOG_ITM_2(TAG "print sensor data\n"), false);
+		CHECK_AND_SET_FLAG(CANtransmitTimestamp, CAN_TRANSMIT_TIME, CAN_COMM_FLAG_BIT, 0, LOG_ITM_2(TAG "can transmit message\n"), false);
 #if(!USE_SYSTICK_HANDLER)
 	}
 #endif
@@ -210,12 +212,11 @@ void read_ads()
 		case CHANNEL_AIN0_GND:
 			sensor_data.coolant_temp = ntc_mv_to_temperature(volts);
 			LOG_ITM_2(TAG "AIN0: %d(0x%X) volts: %f mV\n", ads_data, ads_data, volts);
-			LOG_ITM_2(TAG "Coolent Temp: %f °C\n", sensor_data.coolant_temp);
+			LOG_ITM_2(TAG "Coolant Temp: %f °C\n", sensor_data.coolant_temp);
 			RESET_FLAG(COOLANT_FLAG_BIT);
 			LOG_ITM_2(TAG "COOLANT Flag Bit RESET\n");
 			break;
 		case CHANNEL_AIN1_GND:
-			LOG_ITM_2(TAG "----------------------------------------------------------------------------------------------\n");
 			LOG_ITM_2(TAG "volts: %f, FUEL_FLOAT_SWITCH_VMIN: %f, FUEL_FLOAT_SWITCH_VMAX: %f\n", volts, FUEL_FLOAT_SWITCH_VMIN, FUEL_FLOAT_SWITCH_VMAX);
 			volts = volts / 1000.0f;
 			sensor_data.fuel_lvl = voltage_to_percentage(volts, FUEL_FLOAT_SWITCH_VMIN, FUEL_FLOAT_SWITCH_VMAX);
@@ -273,79 +274,6 @@ void check_ads()
 		SET_FLAG(OP_RUNNING_FLAG_BIT);
 	}
 }
-//
-//void read_ads()
-//{
-//	uint16_t ads_data = ADS1115_getData(ads_handle);
-//	float volts = ads_data * LSB_VOLTS;						// in mV
-//	switch(default_ads1115_config.channel)
-//	{
-//		case CHANNEL_AIN0_GND:
-//			sensor_data.coolant_temp = ntc_mv_to_temperature(volts);
-//			LOG_ITM_2(TAG "AIN0: %d(0x%X) volts: %f mV\n", ads_data, ads_data, volts);
-//			LOG_ITM_2(TAG "Coolant Temp: %f °C\n", sensor_data.coolant_temp);
-//			RESET_FLAG(COOLANT_FLAG_BIT);
-//			break;
-//		case CHANNEL_AIN1_GND:
-//			sensor_data.fuel_lvl = voltage_to_percentage(volts, FUEL_FLOAT_SWITCH_VMIN, FUEL_FLOAT_SWITCH_VMAX);
-//			LOG_ITM_2(TAG "AIN1: %d(0x%X) volts: %f mV\n", ads_data, ads_data, volts);
-//			LOG_ITM_2(TAG "Fuel level: %d%%\n", sensor_data.fuel_lvl);
-//			RESET_FLAG(FUEL_FLAG_BIT);
-//			break;
-//		case CHANNEL_AIN2_GND:
-//			sensor_data.battery_volt = ((volts+ADS_ERROR_COMPENSATION) * BATTERY_DIVIDER) + SCHOTTKY_DIODE_COMPENSATION;
-//			LOG_ITM_2(TAG "AIN2: %d(0x%X) volts: %f mV\n", ads_data, ads_data, volts);
-//			LOG_ITM_2(TAG "Battery voltage: %d mV\n", sensor_data.battery_volt);
-//			RESET_FLAG(VOLTAGE_FLAG_BIT);
-//			break;
-//		case CHANNEL_AIN3_GND:
-//			LOG_ITM_2(TAG "AIN3: %d(0x%X) volts: %f mV\n", ads_data, ads_data, volts);
-//			if(volts>100)		// if read voltage on AIN3 is above thsi much voltage than there is error
-//			{
-//				LOG_ITM_2(TAG "Invalid voltage read on AIN3(GND) line\n");
-//			}
-//			// RESET_FLAG();
-//			break;
-//		default:
-//			LOG_ITM_2(TAG "UNKNOWN ADS CHANNEL\n");
-//			break;
-//	}
-//
-//	RESET_FLAG(ADS_DATA_READY_FLAG_BIT | OP_RUNNING_FLAG_BIT);
-//}
-//
-//void check_ads()
-//{
-//	LOG_ITM_2(TAG "OP_RUNNING_FLAG_BIT: %d, COOLANT_FLAG_BIT: %d, FUEL_FLAG_BIT: %d, VOLTAGE_FLAG_BIT: %d",OP_RUNNING_FLAG_BIT,COOLANT_FLAG_BIT,FUEL_FLAG_BIT, VOLTAGE_FLAG_BIT);
-//	if(!CHECK_FLAG(OP_RUNNING_FLAG_BIT) && CHECK_FLAG(COOLANT_FLAG_BIT))
-//	{
-//		ADS1115_flushData(ads_handle);
-//		// start ads conversion, setup readout on RDY interrupt
-//		default_ads1115_config.channel = CHANNEL_AIN0_GND;
-//		ADS1115_updateConfig(ads_handle, default_ads1115_config);
-//		ADS1115_oneShotMeasure(ads_handle);
-//		SET_FLAG(OP_RUNNING_FLAG_BIT);
-//		LOG_ITM_2(TAG "default_ads1115_config.channel = CHANNEL_AIN0_GND;\n");
-//	}
-//	if(!CHECK_FLAG(OP_RUNNING_FLAG_BIT) && CHECK_FLAG(FUEL_FLAG_BIT))
-//	{
-//		// start ads conversion, setup readout on RDY interrupt
-//		default_ads1115_config.channel = CHANNEL_AIN1_GND;
-//		ADS1115_updateConfig(ads_handle, default_ads1115_config);
-//		ADS1115_oneShotMeasure(ads_handle);
-//		SET_FLAG(OP_RUNNING_FLAG_BIT);
-//		LOG_ITM_2(TAG "default_ads1115_config.channel = CHANNEL_AIN1_GND;\n");
-//	}
-//	if(!CHECK_FLAG(OP_RUNNING_FLAG_BIT) && CHECK_FLAG(VOLTAGE_FLAG_BIT))
-//	{
-//		// start ads conversion, setup readout on RDY interrupt
-//		default_ads1115_config.channel = CHANNEL_AIN2_GND;
-//		ADS1115_updateConfig(ads_handle, default_ads1115_config);
-//		ADS1115_oneShotMeasure(ads_handle);
-//		SET_FLAG(OP_RUNNING_FLAG_BIT);
-//		LOG_ITM_2(TAG "default_ads1115_config.channel = CHANNEL_AIN2_GND;\n");
-//	}
-//}
 
 void check_indicators()
 {
@@ -370,10 +298,10 @@ void check_indicators()
 void print_data()
 {
 
-	can_transmit_data(); // FDCAN2 Transmit Data
+//	can_transmit_data(); // FDCAN2 Transmit Data
 
 
-
+	LOG_ITM_1("\n");
 	LOG_ITM_1(TAG "=============SENSOR DATA==========\n");
 	LOG_ITM_1(TAG "==================================\n");
 	LOG_ITM_1(TAG "Indicators:\n");
@@ -395,7 +323,7 @@ void print_data()
     }
 	LOG_ITM_1(TAG "Gear: %s\n", gear_names[i]);
 	
-	LOG_ITM_2(TAG "Revs: %d\n", sensor_data.tacho);
+	LOG_ITM_3(TAG "Revs: %d\n", sensor_data.tacho);
 	LOG_ITM_1(TAG "Revs: %d\n", sensor_data.tacho);
 	LOG_ITM_1(TAG "Speed: %f\n", sensor_data.speed);
 	LOG_ITM_1(TAG "Coolant Temp: %f °C\n", sensor_data.coolant_temp);
@@ -454,4 +382,6 @@ void app_execute(void)
 	CHECK_FLAG(ADS_DATA_READY_FLAG_BIT) ? (void)read_ads() : (void)0;
 
 	CHECK_FLAG(PRINT_INFO_FLAG_BIT) ? (void)print_data() : (void)0;
+
+	CHECK_FLAG(CAN_COMM_FLAG_BIT) ? (void)can_transmit_data() : (void)0;
 }
