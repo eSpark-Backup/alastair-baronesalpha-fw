@@ -49,7 +49,7 @@ extern "C" {
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 #define ITM_CH_1       		0
-#define ITM_CH_2			    1
+#define ITM_CH_2			1
 
 #define LOG_ITM_1(fmt, ...)  itm_printf(ITM_CH_1, fmt, ##__VA_ARGS__)
 #define LOG_ITM_2(fmt, ...)  itm_printf(ITM_CH_2, fmt, ##__VA_ARGS__)
