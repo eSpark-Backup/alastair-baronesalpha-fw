@@ -447,6 +447,14 @@ static void MX_FDCAN1_Init(void)
 	TxHeader1.MessageMarker = 0;
 }
 
+void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo1ITs){
+	if((RxFifo1ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET){
+		if(HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, RxHeader1, RxData1)){
+			handle_error(1, hfdcan->ErrorCode);
+		}
+	}
+}
+
 // FDCAN2 Configuration Fixes
 static void MX_FDCAN2_Init(void)
 {
