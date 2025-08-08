@@ -79,16 +79,19 @@ The STM32 FDCAN Vehicle Gateway uses two independent CAN interfaces operating at
 - Bytes 2-3: Battery voltage measurement in mV (16-bit unsigned integer)
 - Bytes 4-5: Engine tachometer reading in RPM (16-bit unsigned integer)
 - Bytes 6-7: Reserved for future implementation
+  
 **Example:** `00 00 F9 2E 00 00 00`
 
 #### **Message 2:** TX identifier = *0x102*
 - Bytes 0-3: Speed
 - Bytes 4-7: Coolant Temperature in °C
+  
 **Example:** `00 00 00 00 50 93 C4`
 
 #### **Message 3:** TX identifier = *0x103*
 - Bytes 0-3: Fuel tank level percentage 0-100% (32-bit float)
 - Bytes 4-7: Reserved for future implementation
+  
 **Example:** `34 15 52 42 00 00 00`
 
 ---
