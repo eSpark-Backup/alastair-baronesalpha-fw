@@ -1,9 +1,7 @@
 
 # **alastair-baronessalpha-fw**
 
-
-https://github.com/user-attachments/assets/c29ad03a-fec6-4f73-b347-0e703f37e01b
-
+https://github.com/user-attachments/assets/c5e2a554-1462-4827-9930-e5457603cde2
 
 ### Overview
 The STM32 FDCAN Vehicle Gateway uses an STM32H7 microcontroller with dual FDCAN interfaces to acquire and process automotive sensor data. It supports inputs for RPM, speed, fuel level, coolant temperature, battery voltage, and various vehicle status signals. Processed data is transmitted over CAN for reliable instrumentation, monitoring, and diagnostics.
