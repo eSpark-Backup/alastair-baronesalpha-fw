@@ -122,12 +122,14 @@ Acts as the communication link between the Sensor Board and the Bike’s main CA
 
 #### **Message 4:** TX identifier = *0x200*
 - Forwarded version of FDCAN1 Message 1 (Indicators, Gears, Battery Volts, Tachometer)
+
 **Example:** `00 00 F9 2E 00 00 00`
 
 #### **Message 5:** TX identifier = *0x201*
 - Forwarded version of FDCAN1 Message 2 (Speed, Coolant Temperature)
-- Additional identifiers can be added for bike-specific messages.
+
 **Example:** `00 00 00 00 50 93 C4`
+- Additional identifiers can be added for bike-specific messages.
 #### **Receive Example:** (from PUKK DISPLAY CAN via FDCAN1)
 
 		> Received Header Identifier:  259  
