@@ -1,4 +1,9 @@
+
 # **alastair-baronessalpha-fw**
+
+
+https://github.com/user-attachments/assets/c29ad03a-fec6-4f73-b347-0e703f37e01b
+
 
 ### Overview
 The STM32 FDCAN Vehicle Gateway uses an STM32H7 microcontroller with dual FDCAN interfaces to acquire and process automotive sensor data. It supports inputs for RPM, speed, fuel level, coolant temperature, battery voltage, and various vehicle status signals. Processed data is transmitted over CAN for reliable instrumentation, monitoring, and diagnostics.
@@ -42,7 +47,14 @@ The STM32 FDCAN Vehicle Gateway uses an STM32H7 microcontroller with dual FDCAN 
     Console interface
 - #### LED: 
     System status blink
+    
 
+### Status LED
+-   **Normal Blink**: System is powered on and operating in default/idle mode.
+    
+-   **Fast Blink**: Active operation with CAN communication ongoing.
+    
+-   **Off**: System halted or fault detected.
 ### Build
 
 - Open in STM32CubeIDE
@@ -52,8 +64,8 @@ The STM32 FDCAN Vehicle Gateway uses an STM32H7 microcontroller with dual FDCAN 
 ### CAN Communication
 The STM32 FDCAN Vehicle Gateway uses two independent CAN interfaces operating at 25 kbps for communication with separate vehicle networks:
 
-1. FDCAN1 – PUKK DISPLAY CAN (instrument cluster / display module)
-2. FDCAN2 – BIKE CAN BUS (main vehicle ECU / sensors)
+**1. FDCAN1** – PUKK DISPLAY CAN (instrument cluster / display module)
+**2. FDCAN2** – BIKE CAN BUS (main vehicle ECU / sensors)
 
 #### FDCAN Configuration
 
@@ -66,41 +78,76 @@ The STM32 FDCAN Vehicle Gateway uses two independent CAN interfaces operating at
 - #### Receive Filters: 
     Standard ID filter accepts all IDs; global filter rejects remote frames
 - #### Message RAM: 
-    Rx FIFO0 – 8×8 bytes; Tx FIFO – 10×8 bytes
+    **FDCAN1:** Rx FIFO0 – *8×8 bytes*; Tx FIFO – *10×8 bytes*
+    **FDCAN2**: Rx FIFO1 – *8×8 bytes*; Tx FIFO – *10×8 bytes*
 - #### Error Handling: 
     Automatic retransmission enabled; protocol exception handling disabled
 
 #### 1. FDCAN1 **(PUKK DISPLAY CAN)**
+#### **Purpose**
+Handles communication between the display module and the sensor/control logic. Supports transmitting sensor data to the display and receiving data from the bike via FDCAN2.
 #### **Message Format (3 messages)**
 
 #### **Message 1:** TX identifier = *0x101*
-- Byte 0: Warning indicators (oil pressure, oil temperature, engine temperature, high beam status, left/right turn signals)
-- Byte 1: Transmission gear flags (neutral position, gears 1-5 engagement status)
-- Bytes 2-3: Battery voltage measurement in mV (16-bit unsigned integer)
-- Bytes 4-5: Engine tachometer reading in RPM (16-bit unsigned integer)
-- Bytes 6-7: Reserved for future implementation
+- *Byte 0*: Warning indicators (oil pressure, oil temperature, engine temperature, high beam status, left/right turn signals)
+- *Byte 1*: Transmission gear flags (neutral position, gears 1-5 engagement status)
+- *Bytes 2-3*: Battery voltage measurement in mV (16-bit unsigned integer)
+- *Bytes 4-5*: Engine tachometer reading in RPM (16-bit unsigned integer)
+- *Bytes 6-7*: Reserved for future implementation
   
 **Example:** `00 00 F9 2E 00 00 00`
 
 #### **Message 2:** TX identifier = *0x102*
-- Bytes 0-3: Speed
-- Bytes 4-7: Coolant Temperature in °C
+- *Bytes 0-3*: Speed
+- *Bytes 4-7*: Coolant Temperature in °C
   
 **Example:** `00 00 00 00 50 93 C4`
 
 #### **Message 3:** TX identifier = *0x103*
-- Bytes 0-3: Fuel tank level percentage 0-100% (32-bit float)
-- Bytes 4-7: Reserved for future implementation
+- *Bytes 0-3*: Fuel tank level percentage 0-100% (32-bit float)
+- *Bytes 4-7*: Reserved for future implementation
   
 **Example:** `34 15 52 42 00 00 00`
 
+#### **Receive Example:** (from BIKE CAN BUS via FDCAN2)
+
+    > Received Header Identifier:  512  
+    > Received Data:  00 00 EC 2E 00 00 00 00  
+    > Received Header Identifier:  513  
+    > Received Data:  00 00 00 00 00 34 D5 41
+
 ---
 #### 2. FDCAN2 **(BIKE CAN BUS)**
+**Purpose**
+Acts as the communication link between the Sensor Board and the Bike’s main CAN bus. Supports **both transmitting** mirrored data from FDCAN1 and **receiving** messages from the bike for processing or display.
+#### **Message Format (2 messages example):** 
 
+#### **Message 4:** TX identifier = *0x200*
+- Forwarded version of FDCAN1 Message 1 (Indicators, Gears, Battery Volts, Tachometer)
+**Example:** `00 00 F9 2E 00 00 00`
+
+#### **Message 5:** TX identifier = *0x201*
+- Forwarded version of FDCAN1 Message 2 (Speed, Coolant Temperature)
+- Additional identifiers can be added for bike-specific messages.
+**Example:** `00 00 00 00 50 93 C4`
+#### **Receive Example:** (from PUKK DISPLAY CAN via FDCAN1)
+
+		> Received Header Identifier:  259  
+		> Received Data:  86 CF 55 42 00 00 00 00
+
+### **Testing Summary**
+
+-   Verified **SWV debug output** for both **transmission** and **reception** on **FDCAN1** and **FDCAN2**.
+    
+-   Confirmed correct **CAN message forwarding** between PUKK DISPLAY CAN and BIKE CAN BUS in both directions.
+    
+-   Sensor input validation:
+    
+    -   **Fuel level**
+        
+    -   **Coolant temperature**
+        
+    -   **Battery voltage**
+    - Other sensors also implemented in firmware, including tachometer, speedometer, alert indicators, and gear position signals.
 ---
-
-### Status LED
-
-#### Normal blink: 
-Normal operation
 
