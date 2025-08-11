@@ -62,8 +62,8 @@ The STM32 FDCAN Vehicle Gateway uses an STM32H7 microcontroller with dual FDCAN 
 ### CAN Communication
 The STM32 FDCAN Vehicle Gateway uses two independent CAN interfaces operating at 25 kbps for communication with separate vehicle networks:
 
-**1. FDCAN1** – PUKK DISPLAY CAN (instrument cluster / display module)
-**2. FDCAN2** – BIKE CAN BUS (main vehicle ECU / sensors)
+1. FDCAN1 – PUKK DISPLAY CAN (instrument cluster / display module)
+2. FDCAN2 – BIKE CAN BUS (main vehicle ECU / sensors)
 
 #### FDCAN Configuration
 
