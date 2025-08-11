@@ -45,28 +45,15 @@
 
 /* Private variables ---------------------------------------------------------*/
 
+/* USER CODE BEGIN PV */
+
 FDCAN_HandleTypeDef hfdcan1;
 FDCAN_HandleTypeDef hfdcan2;
 
 FDCAN_TxHeaderTypeDef TxHeader1;
-FDCAN_RxHeaderTypeDef RxHeader1;
+
 
 FDCAN_TxHeaderTypeDef TxHeader2;
-FDCAN_RxHeaderTypeDef RxHeader2;
-
-uint8_t TxData1[12];
-uint8_t RxData1[12];
-
-//uint8_t TxData2[32];
-uint8_t Can1TxData1[8];
-
-uint8_t Can1TxData2[8];
-
-uint8_t Can1TxData3[8];
-
-uint8_t Can1TxData4[8];
-
-uint8_t RxData2[8];
 
 I2C_HandleTypeDef hi2c1;
 
@@ -75,8 +62,6 @@ TIM_HandleTypeDef htim5;
 TIM_HandleTypeDef htim6;
 
 UART_HandleTypeDef huart1;
-
-/* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
 
@@ -97,6 +82,7 @@ static void MX_TIM5_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
 //void itm_printf(uint32_t port, const char* format, ...) {
 //    char buffer[256]; // Temporary buffer for formatted string
 //    va_list args;
@@ -205,7 +191,7 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
-  INIT_ITM_DEBUG(ITM_CH_1, ITM_CH_2, ITM_CH_3);
+  INIT_ITM_DEBUG(ITM_CH_1, ITM_CH_2, ITM_CH_3, ITM_CH_4);
   app_init(&hfdcan1, &hfdcan2, &hi2c1, &htim1, &htim5, &htim6);
 
   console_init(&huart1);
@@ -311,65 +297,6 @@ void SystemClock_Config(void)
   }
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-//static void MX_FDCAN1_Init(void)
-//{
-//  hfdcan1.Instance = FDCAN1;
-//  hfdcan1.Init.FrameFormat = FDCAN_FRAME_CLASSIC;
-//  hfdcan1.Init.Mode = FDCAN_MODE_NORMAL;
-//  hfdcan1.Init.AutoRetransmission = ENABLE;
-//  hfdcan1.Init.TransmitPause = DISABLE;
-//  hfdcan1.Init.ProtocolException = DISABLE;
-//  hfdcan1.Init.NominalPrescaler = 1;
-//  hfdcan1.Init.NominalSyncJumpWidth = 8;
-//  hfdcan1.Init.NominalTimeSeg1 = 13;
-//  hfdcan1.Init.NominalTimeSeg2 = 2;
-//  hfdcan1.Init.DataPrescaler = 1;
-//  hfdcan1.Init.DataSyncJumpWidth = 1;
-//  hfdcan1.Init.DataTimeSeg1 = 1;
-//  hfdcan1.Init.DataTimeSeg2 = 1;
-//  hfdcan1.Init.MessageRAMOffset = 0;
-//  hfdcan1.Init.StdFiltersNbr = 1;
-//  hfdcan1.Init.ExtFiltersNbr = 0;
-//  hfdcan1.Init.RxFifo0ElmtsNbr = 0;
-//  hfdcan1.Init.RxFifo1ElmtsNbr = 0;
-//  hfdcan1.Init.RxBuffersNbr = 0;
-//  hfdcan1.Init.TxEventsNbr = 0;
-//  hfdcan1.Init.TxBuffersNbr = 0;
-//  hfdcan1.Init.TxFifoQueueElmtsNbr = 10;
-//
-//  if (HAL_FDCAN_Init(&hfdcan1) != HAL_OK)
-//  {
-//    Error_Handler();
-//  }
-//
-//  // Configure standard filter to allow all messages
-//  FDCAN_FilterTypeDef sFilterConfig;
-//  sFilterConfig.IdType = FDCAN_STANDARD_ID;
-//  sFilterConfig.FilterIndex = 0;
-//  sFilterConfig.FilterType = FDCAN_FILTER_MASK;
-//  sFilterConfig.FilterConfig = FDCAN_FILTER_TO_RXFIFO0;
-//  sFilterConfig.FilterID1 = 0x000;
-//  sFilterConfig.FilterID2 = 0x000;
-//
-//  if (HAL_FDCAN_ConfigFilter(&hfdcan1, &sFilterConfig) != HAL_OK)
-//  {
-//    Error_Handler();
-//  }
-//
-//  HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_TX_COMPLETE, 0);
-//
-//}
-//
-//void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes)
-//{
-//  LOG_ITM_1("TX complete\n", 0);
-//}
-
-
 // FDCAN1 Configuration Fixes
 static void MX_FDCAN1_Init(void)
 {
@@ -392,7 +319,7 @@ static void MX_FDCAN1_Init(void)
 	hfdcan1.Init.DataTimeSeg1 = 1;
 	hfdcan1.Init.DataTimeSeg2 = 1;
 
-	hfdcan1.Init.MessageRAMOffset = 50;
+	hfdcan1.Init.MessageRAMOffset = 0;
 	hfdcan1.Init.StdFiltersNbr = 1;
 	hfdcan1.Init.ExtFiltersNbr = 0;
 	hfdcan1.Init.RxFifo0ElmtsNbr = 8;
@@ -436,7 +363,7 @@ static void MX_FDCAN1_Init(void)
 	}
 
 	// TX Header Configuration
-	TxHeader1.Identifier = 0x322;
+	TxHeader1.Identifier = 0x322; // Set as an Example later in this code it is changed
 	TxHeader1.IdType = FDCAN_STANDARD_ID;
 	TxHeader1.TxFrameType = FDCAN_DATA_FRAME;
 	TxHeader1.DataLength = FDCAN_DLC_BYTES_8;              //  8 bytes max
@@ -447,13 +374,6 @@ static void MX_FDCAN1_Init(void)
 	TxHeader1.MessageMarker = 0;
 }
 
-void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo1ITs){
-	if((RxFifo1ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET){
-		if(HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, RxHeader1, RxData1)){
-			handle_error(1, hfdcan->ErrorCode);
-		}
-	}
-}
 
 // FDCAN2 Configuration Fixes
 static void MX_FDCAN2_Init(void)
@@ -476,12 +396,12 @@ static void MX_FDCAN2_Init(void)
 	hfdcan2.Init.DataTimeSeg1 = 1;
 	hfdcan2.Init.DataTimeSeg2 = 1;
 
-	hfdcan2.Init.MessageRAMOffset = 50;
+	hfdcan2.Init.MessageRAMOffset = 256;
 	hfdcan2.Init.StdFiltersNbr = 1;
 	hfdcan2.Init.ExtFiltersNbr = 0;
-	hfdcan2.Init.RxFifo0ElmtsNbr = 8;
+	hfdcan2.Init.RxFifo0ElmtsNbr = 0;
 	hfdcan2.Init.RxFifo0ElmtSize = FDCAN_DATA_BYTES_8;
-	hfdcan2.Init.RxFifo1ElmtsNbr = 0;
+	hfdcan2.Init.RxFifo1ElmtsNbr = 8;
 	hfdcan2.Init.RxFifo1ElmtSize = FDCAN_DATA_BYTES_8;
 	hfdcan2.Init.RxBuffersNbr = 0;
 	hfdcan2.Init.RxBufferSize = FDCAN_DATA_BYTES_8;
@@ -500,7 +420,7 @@ static void MX_FDCAN2_Init(void)
 	sFilterConfig.IdType = FDCAN_STANDARD_ID;
 	sFilterConfig.FilterIndex = 0;
 	sFilterConfig.FilterType = FDCAN_FILTER_MASK;
-	sFilterConfig.FilterConfig = FDCAN_FILTER_TO_RXFIFO0;
+	sFilterConfig.FilterConfig = FDCAN_FILTER_TO_RXFIFO1;
 	sFilterConfig.FilterID1 = 0x000;
 	sFilterConfig.FilterID2 = 0x000; // Accept all IDs
 
@@ -515,12 +435,12 @@ static void MX_FDCAN2_Init(void)
 		Error_Handler();
 	}
 
-	if(HAL_FDCAN_ActivateNotification(&hfdcan2, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
+	if(HAL_FDCAN_ActivateNotification(&hfdcan2, FDCAN_IT_RX_FIFO1_NEW_MESSAGE, 0) != HAL_OK) {
 		Error_Handler();
 	}
 
 	// TX Header Configuration
-	TxHeader2.Identifier = 0x200;
+	TxHeader2.Identifier = 0x200; // set as an example later on it can be changed in code
 	TxHeader2.IdType = FDCAN_STANDARD_ID;
 	TxHeader2.TxFrameType = FDCAN_DATA_FRAME;
 	TxHeader2.DataLength = FDCAN_DLC_BYTES_8;              //  8 bytes max
@@ -530,6 +450,7 @@ static void MX_FDCAN2_Init(void)
 	TxHeader2.TxEventFifoControl = FDCAN_NO_TX_EVENTS;
 	TxHeader2.MessageMarker = 0;
 }
+
 
 /**
   * @brief I2C1 Initialization Function

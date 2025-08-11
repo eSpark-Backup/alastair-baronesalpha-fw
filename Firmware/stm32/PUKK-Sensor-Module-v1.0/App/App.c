@@ -323,11 +323,10 @@ void print_data()
     }
 	LOG_ITM_1(TAG "Gear: %s\n", gear_names[i]);
 	
-	LOG_ITM_3(TAG "Revs: %d\n", sensor_data.tacho);
 	LOG_ITM_1(TAG "Revs: %d\n", sensor_data.tacho);
 	LOG_ITM_1(TAG "Speed: %f\n", sensor_data.speed);
 	LOG_ITM_1(TAG "Coolant Temp: %f °C\n", sensor_data.coolant_temp);
-	LOG_ITM_1(TAG "Fuel level: %d%%\n", sensor_data.fuel_lvl);
+	LOG_ITM_1(TAG "Fuel level: %f%%\n", sensor_data.fuel_lvl);
 	LOG_ITM_1(TAG "Battery: %d mV\n\n", sensor_data.battery_volt);
 
 	RESET_FLAG(PRINT_INFO_FLAG_BIT);

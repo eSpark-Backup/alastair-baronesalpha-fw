@@ -51,10 +51,12 @@ extern "C" {
 #define ITM_CH_1       		0
 #define ITM_CH_2			1
 #define ITM_CH_3       		2
+#define ITM_CH_4       		3
 
 #define LOG_ITM_1(fmt, ...)  itm_printf(ITM_CH_1, fmt, ##__VA_ARGS__)
 #define LOG_ITM_2(fmt, ...)  itm_printf(ITM_CH_2, fmt, ##__VA_ARGS__)
 #define LOG_ITM_3(fmt, ...)  itm_printf(ITM_CH_3, fmt, ##__VA_ARGS__)
+#define LOG_ITM_4(fmt, ...)  itm_printf(ITM_CH_4, fmt, ##__VA_ARGS__)
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
