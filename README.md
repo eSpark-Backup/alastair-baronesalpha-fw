@@ -76,8 +76,8 @@ The STM32 FDCAN Vehicle Gateway uses two independent CAN interfaces operating at
 - #### Receive Filters: 
     Standard ID filter accepts all IDs; global filter rejects remote frames
 - #### Message RAM: 
-    **FDCAN1:** Rx FIFO0 – *8×8 bytes*; Tx FIFO – *10×8 bytes*
-    **FDCAN2**: Rx FIFO1 – *8×8 bytes*; Tx FIFO – *10×8 bytes*
+    - **FDCAN1:** Rx FIFO0 – *8×8 bytes*; Tx FIFO – *10×8 bytes*
+    - **FDCAN2**: Rx FIFO1 – *8×8 bytes*; Tx FIFO – *10×8 bytes*
 - #### Error Handling: 
     Automatic retransmission enabled; protocol exception handling disabled
 
