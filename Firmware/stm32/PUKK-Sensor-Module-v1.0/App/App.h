@@ -45,6 +45,7 @@ extern volatile uint16_t flags;
 #define INDICATIONS_TIME            100
 
 #define PRINT_DATA_TIME             5000            // print debug data every 5secs
+#define CAN_TRANSMIT_TIME           4000            // CAN transmit data every 4secs
 
 
 // use a variable style format? or store these values in NVS?
@@ -92,6 +93,38 @@ typedef struct
     uint8_t                 :2;     // reserved for later use
 } gears_t;
 
+typedef struct {
+    indicators_t indicators;
+    gears_t gear;
+    uint16_t battery_volt;
+    uint16_t tacho;
+    float speed;
+    float coolant_temp;
+    float fuel_lvl;
+} sensor_data_t;
+
+extern sensor_data_t sensor_data;
+
+
+extern FDCAN_HandleTypeDef hfdcan1;
+extern FDCAN_HandleTypeDef hfdcan2;
+
+extern FDCAN_TxHeaderTypeDef TxHeader1;
+extern FDCAN_RxHeaderTypeDef RxHeader1;
+
+extern FDCAN_TxHeaderTypeDef TxHeader2;
+extern FDCAN_RxHeaderTypeDef RxHeader2;
+
+
+extern uint8_t Can1TxData1[8];
+
+extern uint8_t Can1TxData2[8];
+
+extern uint8_t Can1TxData3[8];
+
+extern uint8_t Can1TxData4[8];
+
+
 void app_init(FDCAN_HandleTypeDef* pukk_can, FDCAN_HandleTypeDef* ecu_can, I2C_HandleTypeDef* ads_i2c, TIM_HandleTypeDef* tacho, TIM_HandleTypeDef* speedo, TIM_HandleTypeDef* timer);
 void app_execute(void);
 
@@ -105,11 +138,16 @@ void _tick_callback(void);
 // --------------------------------------------------------------
 extern UART_HandleTypeDef*  console_interface;
 extern volatile bool console_line_ready;
+extern int8_t send_data;
+extern HAL_StatusTypeDef ret;
 
 void console_init(UART_HandleTypeDef* huart);
 void console_print(const char *format, ...);
 void console_print_buffer(void);
 int  console_read_line(char *buffer, int max_len);
+void can_transmit_data();
 
+extern HAL_StatusTypeDef status1, status2;
+extern uint32_t error_count1, error_count2;
 
 #endif /* APP_H_ */

@@ -23,6 +23,7 @@
     } while(0)
 
 
+
 #define PIN_CHECK(port, bit, pin_base)  (sensor_data.port.bit = !HAL_GPIO_ReadPin(pin_base##_GPIO_Port, pin_base##_Pin))
 
 #define ADS_GAIN					(6144.0f)				// using PGA_6_144 ads gain
@@ -66,17 +67,24 @@ ADS1115_Handle_t*	 ads_handle = NULL;
 
 volatile uint16_t flags = GEAR_FLAG_BIT | SPEED_TACHO_FLAG_BIT | COOLANT_FLAG_BIT | FUEL_FLAG_BIT | VOLTAGE_FLAG_BIT | INDICATIONS_FLAG_BIT;
 
-struct
-{
-	indicators_t indicators;
-	gears_t	gear;
-	uint16_t tacho;
-	float speed;
-	float coolant_temp;
-	float fuel_lvl;
-	uint16_t battery_volt;
-} sensor_data;
+sensor_data_t sensor_data = {0};
 
+//struct
+//{
+//	indicators_t indicators;
+//	gears_t	gear;
+//	uint16_t tacho;
+//	float speed;
+//	float coolant_temp;
+//	float fuel_lvl;
+//	uint16_t battery_volt;
+//} sensor_data;
+
+int8_t send_data = 0;
+HAL_StatusTypeDef ret = HAL_OK;
+
+HAL_StatusTypeDef status1, status2;
+uint32_t error_count1 = 0, error_count2 = 0;
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
@@ -99,6 +107,7 @@ void _tick_callback(void)
 	static uint32_t voltageCheckTimestamp = 0;
 	static uint32_t indicationsCheckTimestamp = 0;
 	static uint32_t printDataTimestamp = 0;
+	static uint32_t CANtransmitTimestamp = 0;
 	
 #if(!USE_SYSTICK_HANDLER)
 	if(htim == base_timer)
@@ -114,13 +123,15 @@ void _tick_callback(void)
 		CHECK_AND_SET_FLAG(voltageCheckTimestamp, VOLT_CALIB_TIME, VOLTAGE_FLAG_BIT, OP_RUNNING_FLAG_BIT, LOG_ITM_2(TAG "check voltage\n"), false);
 		CHECK_AND_SET_FLAG(indicationsCheckTimestamp, INDICATIONS_TIME, INDICATIONS_FLAG_BIT, 0, LOG_ITM_2(TAG "check indicators\n"), false);
 		CHECK_AND_SET_FLAG(printDataTimestamp, PRINT_DATA_TIME, PRINT_INFO_FLAG_BIT, 0, LOG_ITM_2(TAG "print sensor data\n"), false);
+		CHECK_AND_SET_FLAG(CANtransmitTimestamp, CAN_TRANSMIT_TIME, CAN_COMM_FLAG_BIT, 0, LOG_ITM_2(TAG "can transmit message\n"), false);
 #if(!USE_SYSTICK_HANDLER)
 	}
 #endif
 }
 
 float voltage_to_percentage(float Vin, float Vmin, float Vmax)
-{
+{ // 902.062500 0.118333 1.52667
+	LOG_ITM_2(TAG, "Vin: %f, Vmin: %f, Vmax: %f \n",Vin, Vmin, Vmax);
     if (Vin <= Vmin) return 0.0f;
     if (Vin >= Vmax) return 100.0f;
     return ((Vin - Vmin) / (Vmax - Vmin)) * 100.0f;
@@ -143,6 +154,7 @@ float ntc_mv_to_temperature(float vout_mv)
 
     return temperature_K - 273.15f;  // Return °C
 }
+
 
 void check_gears()
 {
@@ -200,13 +212,16 @@ void read_ads()
 		case CHANNEL_AIN0_GND:
 			sensor_data.coolant_temp = ntc_mv_to_temperature(volts);
 			LOG_ITM_2(TAG "AIN0: %d(0x%X) volts: %f mV\n", ads_data, ads_data, volts);
-			LOG_ITM_2(TAG "Coolent Temp: %f °C\n", sensor_data.coolant_temp);
+			LOG_ITM_2(TAG "Coolant Temp: %f °C\n", sensor_data.coolant_temp);
 			RESET_FLAG(COOLANT_FLAG_BIT);
+			LOG_ITM_2(TAG "COOLANT Flag Bit RESET\n");
 			break;
 		case CHANNEL_AIN1_GND:
+			LOG_ITM_2(TAG "volts: %f, FUEL_FLOAT_SWITCH_VMIN: %f, FUEL_FLOAT_SWITCH_VMAX: %f\n", volts, FUEL_FLOAT_SWITCH_VMIN, FUEL_FLOAT_SWITCH_VMAX);
+			volts = volts / 1000.0f;
 			sensor_data.fuel_lvl = voltage_to_percentage(volts, FUEL_FLOAT_SWITCH_VMIN, FUEL_FLOAT_SWITCH_VMAX);
 			LOG_ITM_2(TAG "AIN1: %d(0x%X) volts: %f mV\n", ads_data, ads_data, volts);
-			LOG_ITM_2(TAG "Fuel level: %d%%\n", sensor_data.fuel_lvl);
+			LOG_ITM_2(TAG "Fuel level: %f%%\n", sensor_data.fuel_lvl);
 			RESET_FLAG(FUEL_FLAG_BIT);
 			break;
 		case CHANNEL_AIN2_GND:
@@ -217,7 +232,7 @@ void read_ads()
 			break;
 		case CHANNEL_AIN3_GND:
 			LOG_ITM_2(TAG "AIN3: %d(0x%X) volts: %f mV\n", ads_data, ads_data, volts);
-			if(volts>100)		// if read voltage on AIN3 is above thsi much voltage than there is error
+			if(volts>100)		// if read voltage on AIN3 is above this much voltage than there is error
 			{
 				LOG_ITM_2(TAG "Invalid voltage read on AIN3(GND) line\n");
 			}
@@ -282,6 +297,11 @@ void check_indicators()
 
 void print_data()
 {
+
+//	can_transmit_data(); // FDCAN2 Transmit Data
+
+
+	LOG_ITM_1("\n");
 	LOG_ITM_1(TAG "=============SENSOR DATA==========\n");
 	LOG_ITM_1(TAG "==================================\n");
 	LOG_ITM_1(TAG "Indicators:\n");
@@ -306,7 +326,7 @@ void print_data()
 	LOG_ITM_1(TAG "Revs: %d\n", sensor_data.tacho);
 	LOG_ITM_1(TAG "Speed: %f\n", sensor_data.speed);
 	LOG_ITM_1(TAG "Coolant Temp: %f °C\n", sensor_data.coolant_temp);
-	LOG_ITM_1(TAG "Fuel level: %d%%\n", sensor_data.fuel_lvl);
+	LOG_ITM_1(TAG "Fuel level: %f%%\n", sensor_data.fuel_lvl);
 	LOG_ITM_1(TAG "Battery: %d mV\n\n", sensor_data.battery_volt);
 
 	RESET_FLAG(PRINT_INFO_FLAG_BIT);
@@ -357,9 +377,10 @@ void app_execute(void)
 	CHECK_FLAG(SPEED_TACHO_FLAG_BIT) ? (void)check_tachospeed() : (void)0;
 	CHECK_FLAG(COOLANT_FLAG_BIT | FUEL_FLAG_BIT | VOLTAGE_FLAG_BIT) ? (void)check_ads() : (void)0;
 	CHECK_FLAG(INDICATIONS_FLAG_BIT) ? (void)check_indicators() : (void)0;
-	
+
 	CHECK_FLAG(ADS_DATA_READY_FLAG_BIT) ? (void)read_ads() : (void)0;
 
 	CHECK_FLAG(PRINT_INFO_FLAG_BIT) ? (void)print_data() : (void)0;
-}
 
+	CHECK_FLAG(CAN_COMM_FLAG_BIT) ? (void)can_transmit_data() : (void)0;
+}
