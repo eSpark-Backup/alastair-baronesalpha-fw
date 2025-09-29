@@ -1,0 +1,95 @@
+/*
+ * App.cpp
+ *
+ *  Created on: Jul 22, 2025
+ *      Author: Farhan
+ */
+
+#include "App.h"
+
+FDCAN_HandleTypeDef* pukk_display_can_interface = NULL;
+FDCAN_HandleTypeDef* ecu_can_interface = NULL;
+I2C_HandleTypeDef*   ads_interface = NULL;
+UART_HandleTypeDef*  debug_interface = NULL;
+TIM_HandleTypeDef*	 base_timer = NULL;						// base 1ms timer
+
+void _timer_callback(TIM_HandleTypeDef* htim)
+{
+
+}
+
+void console_init(UART_HandleTypeDef* huart)
+{
+    console_uart = huart;
+}
+
+void console_print(const char *format, ...)
+{
+    char buffer[256];
+    va_list args;
+    va_start(args, format);
+    int len = vsnprintf(buffer, sizeof(buffer), format, args);
+    va_end(args);
+    HAL_UART_Transmit(debug_interface, (uint8_t*)buffer, len, HAL_MAX_DELAY);
+}
+
+int console_read_line(char *buffer, int max_len)
+{
+    int idx = 0;
+    uint8_t ch;
+
+    while (idx < max_len - 1)
+    {
+        HAL_UART_Receive(debug_interface, &ch, 1, HAL_MAX_DELAY);
+
+        if (ch == '\r' || ch == '\n') {
+            buffer[idx] = '\0';
+            console_print("\r\n");
+            return idx;
+        } else {
+            buffer[idx++] = ch;
+            console_print("%c", ch);  // Echo back
+        }
+    }
+
+    buffer[idx] = '\0';
+    return idx;
+}
+
+void app_init(FDCAN_HandleTypeDef* pukk_can, FDCAN_HandleTypeDef* ecu_can, I2C_HandleTypeDef* ads_i2c, TIM_HandleTypeDef* timer)
+{
+	pukk_display_can_interface = pukk_can;
+	ecu_can_interface = ecu_can;
+	ads_interface = ads_i2c;
+	base_timer = timer;
+
+	// populate timer pointer first
+	HAL_TIM_RegisterCallback(base_timer, HAL_TIM_PERIOD_ELAPSED_CB_ID, _timer_callback);
+	HAL_TIM_Base_Start(base_timer);
+
+
+	// Initialize timer based approach for logging GPIO signals and populate them in a buffer
+
+	// Initialize timers for capturing tachmeter/speedometer pulses
+	// use a seperate timer for logging pulse counts
+
+	// Initialize i2c for communication with ads1115 adc ic
+	// ch1: coolant, ch2: fuel gauge, ch3: voltage feedback/callibration (3.36v ideal reading), ch4: connected to GND
+
+	// Initialize can bus communication
+}
+
+void app_execute(void)
+{
+	char name[20];
+	int value;
+
+	printf("Enter your name: ");
+	scanf("%s", name);
+
+	printf("Enter a number: ");
+	scanf("%d", &value);
+
+	printf("You entered: %s and %d\n", name, value);
+
+}

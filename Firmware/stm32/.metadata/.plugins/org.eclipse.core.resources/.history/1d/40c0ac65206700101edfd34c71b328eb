@@ -1,0 +1,23 @@
+/*
+ * App.cpp
+ *
+ *  Created on: Jul 22, 2025
+ *      Author: Farhan
+ */
+
+#include "App.h"
+
+
+void app_init(void)
+{
+	// Initialize timers for capturing tachmeter/speedometer pulses
+	// use a seperate timer for logging pulse counts
+
+	// Initialize i2c for communication with ads1115 adc ic
+	// ch1: coolant, ch2: fuel gauge, ch3: voltage feedback/callibration (3.36v ideal reading), ch4: connected to GND
+}
+
+void app_execute(void)
+{
+
+}

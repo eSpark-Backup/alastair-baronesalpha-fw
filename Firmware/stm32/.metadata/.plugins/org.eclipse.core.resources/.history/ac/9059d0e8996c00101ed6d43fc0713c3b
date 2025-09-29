@@ -1,0 +1,292 @@
+/*
+ * App.cpp
+ *
+ *  Created on: Jul 22, 2025
+ *      Author: Farhan
+ */
+
+#include "App.h"
+#include "ADS1115.h"
+#include "core_cm7.h"
+
+#define APP_TAG		"[ APP ] "
+
+#define GEAR_FLAG_BIT				(1U << 0)
+#define SPEED_TACHO_FLAG_BIT		(1U << 1)
+#define COOLANT_FLAG_BIT			(1U << 2)
+#define FUEL_FLAG_BIT				(1U << 3)
+#define VOLTAGE_FLAG_BIT			(1U << 4)
+#define INDICATIONS_FLAG_BIT		(1U << 5)
+#define ADS_DATA_READY_FLAG_BIT		(1U << 14)
+#define OP_RUNNING_FLAG_BIT			(1U << 15)
+
+#define RESET(var, bit)			    ((var) &= ~(bit))
+#define RESET_FLAG(x)				RESET(flags, x)
+#define SET_FLAG(x)				(flags |= (x))
+#define CHECK_FLAG(x)				(flags & (x))
+
+#define PIN_CHECK(port, bit, pin_base)  (sensor_data.port.bit = !HAL_GPIO_ReadPin(pin_base##_GPIO_Port, pin_base##_Pin))
+
+static const char *gear_names[] = {
+    "Neutral",  // bit 0
+    "Gear 1",   // bit 1
+    "Gear 2",   // bit 2
+    "Gear 3",   // bit 3
+    "Gear 4",   // bit 4
+    "Gear 5",   // bit 5
+	"UNKNOWN STATE"
+};
+
+FDCAN_HandleTypeDef* pukk_display_can_interface = NULL;
+FDCAN_HandleTypeDef* ecu_can_interface = NULL;
+I2C_HandleTypeDef*   ads_i2c_interface = NULL;
+TIM_HandleTypeDef*	 base_timer = NULL;						// base 1ms timer
+ADS1115_Handle_t*	 ads_handle = NULL;
+
+volatile uint32_t gearCheckTimestamp = 0;
+volatile uint32_t speedTachoCheckTimestamp = 0;
+volatile uint32_t coolantCheckTimestamp = 0;
+volatile uint32_t fuelCheckTimestamp = 0;
+volatile uint32_t voltageCheckTimestamp = 0;
+volatile uint32_t indicationsCheckTimestamp = 0;
+
+volatile uint16_t flags = GEAR_FLAG_BIT | SPEED_TACHO_FLAG_BIT | COOLANT_FLAG_BIT | FUEL_FLAG_BIT | VOLTAGE_FLAG_BIT | INDICATIONS_FLAG_BIT;
+
+struct
+{
+	indicators_t indicators;
+	gears_t	gear;
+	uint16_t tacho;
+	uint8_t speed;
+	uint8_t coolant_temp;
+	uint16_t fuel_lvl;
+	uint8_t battery_volt;
+} sensor_data;
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	if(GPIO_Pin == ADC_RDY_Pin)
+	{
+		SET_FLAG(ADS_DATA_READY_FLAG_BIT);
+	}
+}
+
+void _timer_callback(TIM_HandleTypeDef* htim)
+{
+	if(htim == base_timer)
+	{
+		// LOG_ITM_1(APP_TAG "Timer callback\n");
+		uint32_t now = HAL_GetTick();
+		
+		// if((now - gearCheckTimestamp) > GEAR_CHECK_TIME)
+		// {
+		// 	if(!CHECK_FLAG(GEAR_FLAG_BIT))
+		// 	{
+		// 		// LOG_ITM_1(APP_TAG "check gears\n");
+		// 		gearCheckTimestamp = now;
+				
+		// 		SET_FLAG(GEAR_FLAG_BIT);
+		// 	}
+		// }
+		// if((now - speedTachoCheckTimestamp) > SPEED_TACH_TIME)
+		// {
+		// 	if(!CHECK_FLAG(SPEED_TACHO_FLAG_BIT))
+		// 	{
+		// 		LOG_ITM_1(APP_TAG "check speed/tacho\n");
+		// 		speedTachoCheckTimestamp = now;
+
+		// 		SET_FLAG(SPEED_TACHO_FLAG_BIT);
+		// 	}
+		// }
+		// if((now - coolantCheckTimestamp) > COOLANT_TIME)
+		// {
+		// 	if(!CHECK_FLAG(COOLANT_FLAG_BIT | OP_RUNNING_FLAG_BIT))
+		// 	{
+		// 		LOG_ITM_1(APP_TAG "check coolant\n");
+		// 		coolantCheckTimestamp = now;
+
+		// 		SET_FLAG(COOLANT_FLAG_BIT);
+		// 	}
+		// }
+		// if((now - fuelCheckTimestamp) > FUEL_GAUGE_TIME)
+		// {
+		// 	if(!CHECK_FLAG(FUEL_FLAG_BIT | OP_RUNNING_FLAG_BIT))
+		// 	{
+		// 		LOG_ITM_1(APP_TAG "check fuel\n");
+		// 		fuelCheckTimestamp = now;
+
+		// 		SET_FLAG(FUEL_FLAG_BIT);
+		// 	}
+		// }
+		if((now - voltageCheckTimestamp) > VOLT_CALIB_TIME)
+		{
+			if(!CHECK_FLAG(VOLTAGE_FLAG_BIT | OP_RUNNING_FLAG_BIT))
+			{
+				LOG_ITM_1(APP_TAG "check voltage\n");
+				voltageCheckTimestamp = now;
+
+				SET_FLAG(VOLTAGE_FLAG_BIT);
+			}
+		}
+		// if((now - indicationsCheckTimestamp) > INDICATIONS_TIME)
+		// {
+		// 	if(!CHECK_FLAG(INDICATIONS_FLAG_BIT))
+		// 	{
+		// 		// LOG_ITM_1(APP_TAG "check indicators\n");
+		// 		indicationsCheckTimestamp = now;
+
+		// 		SET_FLAG(INDICATIONS_FLAG_BIT);
+		// 	}
+		// }
+	}
+}
+
+void check_gears()
+{
+	// sensor_data.gear.neutral = !HAL_GPIO_ReadPin(NEUTRAL_SIG_GPIO_Port, NEUTRAL_SIG_Pin);
+	PIN_CHECK(gear, neutral, NEUTRAL_SIG);
+	PIN_CHECK(gear, gear_1, GEAR_1_SIG);
+	PIN_CHECK(gear, gear_2, GEAR_2_SIG);
+	PIN_CHECK(gear, gear_3, GEAR_3_SIG);
+	PIN_CHECK(gear, gear_4, GEAR_4_SIG);
+	PIN_CHECK(gear, gear_5, GEAR_5_SIG);
+
+	uint8_t gear_val = *((uint8_t *)&sensor_data.gear);
+	int i=0;
+    for (i; i < 6; i++)
+    {
+        if (gear_val & (1 << i))
+        {
+			break;  // stop after first match (assumes only one gear is active)
+        }
+    }
+	
+	LOG_ITM_1(APP_TAG "Current gear: %s\n", gear_names[i]);
+	RESET_FLAG(GEAR_FLAG_BIT);
+}
+
+void check_tachospeed()
+{
+
+	RESET_FLAG(SPEED_TACHO_FLAG_BIT);
+}
+
+void read_ads()
+{
+	uint16_t ads_data = ADS1115_getData(ads_handle);
+	switch(default_ads1115_config.channel)
+	{
+		case CHANNEL_AIN0_GND:
+			RESET_FLAG(COOLANT_FLAG_BIT);
+			break;
+		case CHANNEL_AIN1_GND:
+			RESET_FLAG(FUEL_FLAG_BIT);
+			break;
+		case CHANNEL_AIN2_GND:
+			LOG_ITM_1(APP_TAG "AIN3: %d (0x%X)", ads_data, ads_data);
+			RESET_FLAG(VOLTAGE_FLAG_BIT);
+			break;
+		case CHANNEL_AIN3_GND:
+			LOG_ITM_1(APP_TAG "AIN3: %d (0x%X)", ads_data, ads_data);
+			// RESET_FLAG();
+			break;
+		default:
+			LOG_ITM_1(APP_TAG "UNKNOWN ADS CHANNEL\n");
+			break;
+	}
+
+	RESET_FLAG(ADS_DATA_READY_FLAG_BIT | OP_RUNNING_FLAG_BIT);
+}
+
+void check_ads()
+{
+	if(!CHECK_FLAG(OP_RUNNING_FLAG_BIT) && CHECK_FLAG(COOLANT_FLAG_BIT))
+	{
+		// start ads conversion, setup readout on RDY interrupt
+		default_ads1115_config.channel = CHANNEL_AIN0_GND;
+		ADS1115_updateConfig(ads_handle, default_ads1115_config);
+		ADS1115_oneShotMeasure(ads_handle);
+		SET_FLAG(OP_RUNNING_FLAG_BIT);
+	}
+	if(!CHECK_FLAG(OP_RUNNING_FLAG_BIT) && CHECK_FLAG(FUEL_FLAG_BIT))
+	{
+		// start ads conversion, setup readout on RDY interrupt
+		default_ads1115_config.channel = CHANNEL_AIN1_GND;
+		ADS1115_updateConfig(ads_handle, default_ads1115_config);
+		ADS1115_oneShotMeasure(ads_handle);
+		SET_FLAG(OP_RUNNING_FLAG_BIT);
+	}
+	if(!CHECK_FLAG(OP_RUNNING_FLAG_BIT) && CHECK_FLAG(VOLTAGE_FLAG_BIT))
+	{
+		// start ads conversion, setup readout on RDY interrupt
+		default_ads1115_config.channel = CHANNEL_AIN2_GND;
+		ADS1115_updateConfig(ads_handle, default_ads1115_config);
+		ADS1115_oneShotMeasure(ads_handle);
+		SET_FLAG(OP_RUNNING_FLAG_BIT);
+	}
+}
+
+void check_indicators()
+{
+	PIN_CHECK(indicators, oil_pressure, OIL_PRESURE_SIG);
+	PIN_CHECK(indicators, oil_temp, OIL_TEMP_SIG);
+	PIN_CHECK(indicators, engine_temp, ENGINE_TEMP_SIG);
+	PIN_CHECK(indicators, high_beam, HIGH_BEAM_SIG);
+	PIN_CHECK(indicators, right_turn, RIGHT_TURN_SIG);
+	PIN_CHECK(indicators, left_turn, LEFT_TURN_SIG);
+
+	// LOG_ITM_1(APP_TAG "Indicators:\n");
+	// LOG_ITM_1(APP_TAG "\tOIL_PRESURE: %s\n", (sensor_data.indicators.oil_pressure) ? "true" : "false");
+	// LOG_ITM_1(APP_TAG "\tOIL_TEMP: %s\n", (sensor_data.indicators.oil_temp) ? "true" : "false");
+	// LOG_ITM_1(APP_TAG "\tENGINE_TEMP: %s\n", (sensor_data.indicators.engine_temp) ? "true" : "false");
+	// LOG_ITM_1(APP_TAG "\tHIGH_BEAM: %s\n", (sensor_data.indicators.high_beam) ? "true" : "false");
+	// LOG_ITM_1(APP_TAG "\tRIGHT_TURN: %s\n", (sensor_data.indicators.right_turn) ? "true" : "false");
+	// LOG_ITM_1(APP_TAG "\tLEFT_TURN: %s\n", (sensor_data.indicators.left_turn) ? "true" : "false");
+
+	RESET_FLAG(INDICATIONS_FLAG_BIT);
+}
+
+void app_init(FDCAN_HandleTypeDef* pukk_can, FDCAN_HandleTypeDef* ecu_can, I2C_HandleTypeDef* ads_i2c, TIM_HandleTypeDef* timer)
+{
+	pukk_display_can_interface = pukk_can;
+	ecu_can_interface = ecu_can;
+	ads_i2c_interface = ads_i2c;
+	base_timer = timer;
+	
+	// Initialize timer based approach for logging GPIO signals and populate them in a buffer
+	
+	// Initialize timers for capturing tachmeter/speedometer pulses
+	// use a seperate timer for logging pulse counts
+	
+	// Initialize i2c for communication with ads1115 adc ic
+	// ch1: coolant, ch2: fuel gauge, ch3: voltage feedback/callibration (3.36v ideal reading), ch4: connected to GND
+	ads_handle = ADS1115_init(ads_i2c_interface, default_ads1115_addr, default_ads1115_config);
+	HAL_StatusTypeDef err = ADS1115_oneShotMeasure(ads_handle);
+	err;
+	SET_FLAG(OP_RUNNING_FLAG_BIT);
+
+	// Initialize can bus communication
+
+
+	// setup all peripherals first, than initiate readout timer callback
+	HAL_TIM_RegisterCallback(base_timer, HAL_TIM_PERIOD_ELAPSED_CB_ID, _timer_callback);
+	HAL_TIM_Base_Start_IT(base_timer);
+}
+
+void app_execute(void)
+{
+	if (console_line_ready)
+	{
+		console_line_ready = false;
+
+		console_print_buffer();
+	}
+
+	CHECK_FLAG(GEAR_FLAG_BIT) ? (void)check_gears() : (void)0;
+	CHECK_FLAG(SPEED_TACHO_FLAG_BIT) ? (void)check_tachospeed() : (void)0;
+	CHECK_FLAG(COOLANT_FLAG_BIT | FUEL_FLAG_BIT | VOLTAGE_FLAG_BIT) ? (void)check_ads() : (void)0;
+	CHECK_FLAG(INDICATIONS_FLAG_BIT) ? (void)check_indicators() : (void)0;
+	
+	CHECK_FLAG(ADS_DATA_READY_FLAG_BIT) ? (void)read_ads() : (void)0;
+}
+

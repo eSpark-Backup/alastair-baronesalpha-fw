@@ -1,0 +1,45 @@
+/*
+ * console.c
+ *
+ *  Created on: Jul 25, 2025
+ *      Author: Farhan
+ */
+
+
+void console_init(UART_HandleTypeDef* huart)
+{
+	debug_interface = huart;
+}
+
+void console_print(const char *format, ...)
+{
+    char buffer[256];
+    va_list args;
+    va_start(args, format);
+    int len = vsnprintf(buffer, sizeof(buffer), format, args);
+    va_end(args);
+    HAL_UART_Transmit(debug_interface, (uint8_t*)buffer, len, HAL_MAX_DELAY);
+}
+
+int console_read_line(char *buffer, int max_len)
+{
+    int idx = 0;
+    uint8_t ch;
+
+    while (idx < max_len - 1)
+    {
+        HAL_UART_Receive(debug_interface, &ch, 1, HAL_MAX_DELAY);
+
+        if (ch == '\r' || ch == '\n') {
+            buffer[idx] = '\0';
+            console_print("\r\n");
+            return idx;
+        } else {
+            buffer[idx++] = ch;
+            console_print("%c", ch);  // Echo back
+        }
+    }
+
+    buffer[idx] = '\0';
+    return idx;
+}

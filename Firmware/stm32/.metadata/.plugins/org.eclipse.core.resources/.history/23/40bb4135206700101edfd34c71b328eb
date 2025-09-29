@@ -1,0 +1,20 @@
+/*
+ * App.cpp
+ *
+ *  Created on: Jul 22, 2025
+ *      Author: Farhan
+ */
+
+#include "App.h"
+
+
+void app_init(void)
+{
+	// Initialize timers for capturing tachmeter/speedometer pulses
+	// use a seperate timer for logging pulse counts
+}
+
+void app_execute(void)
+{
+
+}

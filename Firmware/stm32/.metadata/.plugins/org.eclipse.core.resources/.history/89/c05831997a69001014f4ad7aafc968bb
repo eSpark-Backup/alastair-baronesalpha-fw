@@ -1,0 +1,92 @@
+/*
+ * console.c
+ *
+ *  Created on: Jul 25, 2025
+ *      Author: Farhan
+ */
+
+#include "App.h"
+#include <stdarg.h>
+#include <stdbool.h>
+
+UART_HandleTypeDef*  console_interface = NULL;
+
+#define CONSOLE_RX_BUFFER_SIZE 256
+
+uint8_t console_rx_char; // single-byte rx buffer
+char console_line_buffer[CONSOLE_RX_BUFFER_SIZE];
+volatile uint16_t console_line_index = 0;
+volatile bool console_line_ready = false;
+
+void console_init(UART_HandleTypeDef* huart)
+{
+	console_interface = huart;
+	HAL_UART_Receive_IT(console_interface, &console_rx_char, 1);  // Start receiving
+}
+
+void console_print(const char *format, ...)
+{
+    char buffer[256];
+    va_list args;
+    va_start(args, format);
+    int len = vsnprintf(buffer, sizeof(buffer), format, args);
+    va_end(args);
+    HAL_UART_Transmit(console_interface, (uint8_t*)buffer, len, HAL_MAX_DELAY);
+}
+
+void console_print_buffer()
+{
+
+}
+
+//int console_read_line(char *buffer, int max_len)
+//{
+//    int idx = 0;
+//    uint8_t ch;
+//
+//    while (idx < max_len - 1)
+//    {
+//        HAL_UART_Receive(console_interface, &ch, 1, HAL_MAX_DELAY);
+//
+//        if (ch == '\r' || ch == '\n') {
+//            buffer[idx] = '\0';
+//            console_print("\r\n");
+//            return idx;
+//        } else {
+//            buffer[idx++] = ch;
+//            console_print("%c", ch);  // Echo back
+//        }
+//    }
+//
+//    buffer[idx] = '\0';
+//    return idx;
+//}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    if (huart == console_interface)
+    {
+        if (!console_line_ready)
+        {
+            char ch = console_rx_char;
+
+            if (ch == '\r' || ch == '\n')
+            {
+                console_line_buffer[console_line_index] = '\0';
+                console_line_ready = true;
+
+                // Optional: echo newline
+                char newline[] = "\r\n";
+                HAL_UART_Transmit(console_interface, (uint8_t*)newline, 2, 10);
+            }
+            else if (console_line_index < CONSOLE_RX_BUFFER_SIZE - 1)
+            {
+                console_line_buffer[console_line_index++] = ch;
+                HAL_UART_Transmit(console_interface, (uint8_t*)&ch, 1, 10); // Echo char
+            }
+        }
+
+        // Restart reception
+        HAL_UART_Receive_IT(console_interface, &console_rx_char, 1);
+    }
+}
